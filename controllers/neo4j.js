@@ -12,7 +12,31 @@ exports.getAllLabels = function (callback) {
 };
 
 
-exports.getNodesByLabels = function (labels, callback) {
+exports.getNodesByLabels = function (req, res) {
 
-    db.readNodesWithLabelsAndProperties(labels, null, callback);
+    if (req.body.labels && req.body.labels.length) {
+
+        let queryString = "match (n) where ";
+        for (let i=0; i<=req.body.labels.length-1; i++) {
+            if (i != 0) {
+                queryString += " and ";
+            }
+            queryString += "n:" + req.body.labels[i];
+        }
+        queryString += " return n"; //ID(n) as _id, n.name as name";
+        console.log(queryString);
+        db.cypherQuery(queryString, function (err, result) {
+             if (err) {
+                 res.status(500).json("An error occurred");
+                 console.log(err);
+             }
+            else {
+                 res.status(200).json({"nodes": result});
+             }
+        })
+    }
+    else {
+       res.status(400).json("No labels supplied");
+    }
+    
 };

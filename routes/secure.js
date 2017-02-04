@@ -12,4 +12,7 @@ const router = express.Router();
 router.use(authController.authenticate);
 
 
+
+router.route('/getnodeswithlabels').post(neo4jController.getNodesByLabels);
+
 module.exports = router;
