@@ -4,3 +4,15 @@
 
 const neo4j = require('node-neo4j');
 let db = new neo4j('http://neo4j:test@localhost:7474');
+
+
+exports.getAllLabels = function (callback) {
+
+    db.listAllLabels(callback);
+};
+
+
+exports.getNodesByLabels = function (labels, callback) {
+
+    db.readNodesWithLabelsAndProperties(labels, null, callback);
+};

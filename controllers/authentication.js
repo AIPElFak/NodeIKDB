@@ -7,6 +7,8 @@ const bcrypt = require('bcryptjs');
 
 const User = require('../Schemas/User');
 
+const neo4jController = require('../controllers/neo4j');
+
 process.env.SECRET_KEY = "UserAuthKey";
 
 exports.login = function (req,res) {
@@ -29,7 +31,14 @@ exports.login = function (req,res) {
                     }
                     else {
                         if(same) {
-                            res.status(200).json({"token": user.token});
+                            neo4jController.getAllLabels(function (err, labels) {
+                                if (err) {
+                                    res.status(500).json({"error": "Error while listing labels", "token": user.token});
+                                }
+                                else {
+                                    res.status(200).json({"token": user.token, "labels": labels});
+                                }
+                            });
 
                         }
                         else {
