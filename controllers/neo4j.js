@@ -40,3 +40,29 @@ exports.getNodesByLabels = function (req, res) {
     }
     
 };
+
+exports.getNodeById = function (req,res) {
+    if(req.params._id) {
+        db.readNode(req.params._id,function (err,node) {
+            if(err){
+                res.status(500).json("Server error");
+            }
+            else {
+                db.readRelationshipsOfNode(req.params._id,function (err,relationships) {
+                    if(err) {
+                        res.status(500).json("Server error");
+                    }
+                    else {
+                        res.status(200).json({"node":node,"relationships":relationships});
+                    }
+
+                })
+            }
+        })
+    }
+    else {
+        res.status(400).json("No node id supplied");
+    }
+
+
+}

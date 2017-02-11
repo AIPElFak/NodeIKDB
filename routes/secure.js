@@ -14,5 +14,6 @@ router.use(authController.authenticate);
 
 
 router.route('/getnodeswithlabels').post(neo4jController.getNodesByLabels);
+router.route('/getnodebyid/:_id').get(neo4jController.getNodeById);
 
 module.exports = router;
