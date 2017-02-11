@@ -31,7 +31,7 @@ exports.getNodesByLabels = function (req, res) {
                  console.log(err);
              }
             else {
-                 res.status(200).json({"nodes": result});
+                 res.status(200).json(result.data);
              }
         })
     }
