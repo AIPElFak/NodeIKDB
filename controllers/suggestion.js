@@ -14,7 +14,7 @@ exports.createLinkSuggestion = function (req, res) {
         if (req.body.suggestion_type == "CREATE") {
             if (req.body.node_from && req.body.node_to) {
                 if (req.body.type) {
-                    db.readNode(node_from, function (err, nodeFrom) {
+                    db.readNode(req.body.node_from, function (err, nodeFrom) {
                         if (err) {
                             res.status(500).json("Internal error");
                         }
@@ -22,7 +22,7 @@ exports.createLinkSuggestion = function (req, res) {
                             res.status(400).json("Invalid start node id supplied");
                         }
                         else {
-                            db.readNode(node_to, function (err, nodeTo) {
+                            db.readNode(req.body.node_to, function (err, nodeTo) {
                                 if (err) {
                                     res.status(500).json("Internal error");
                                 }
