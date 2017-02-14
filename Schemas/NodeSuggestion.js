@@ -8,12 +8,16 @@ var mongoose = require('mongoose');
 
 var NodeSuggestionSchema = mongoose.Schema({
     author: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-    type : String,
+    suggestion_type : String,
     node_id: String,
-    node : mongoose.Schema.Types.Mixed,
-    date_created : Number,
-    votes_for: Number,
-    votes_against: Number
+    types: [String],
+    name: String,
+    definition: String,
+    description: String,
+    date_created : {type: Date, default: Date.now()},
+    votes_for: {type: Number, default: 0},
+    votes_against: {type: Number, default: 0},
+    votes_users: [{user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}, positive: Boolean}]
 });
 
 

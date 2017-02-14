@@ -8,14 +8,18 @@ var mongoose = require('mongoose');
 
 var LinkSuggestionSchema = mongoose.Schema({
     author: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-    type : String,
+    suggestion_type : String,
     link_id: String,
-    link : mongoose.Schema.Types.Mixed,
+    type: String,
+    description: String,
     node_from: String,
     node_to: String,
-    date_created : Number,
-    votes_for: Number,
-    votes_against: Number
+    node_to_name: String,
+    node_from_name: String,
+    date_created : {type: Date, default: Date.now()},
+    votes_for: {type: Number, default: 0},
+    votes_against: {type: Number, default: 0},
+    votes_users: [{user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}, positive: Boolean}]
 });
 
 
