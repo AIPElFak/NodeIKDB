@@ -71,8 +71,8 @@ exports.createLinkSuggestion = function (req, res) {
         }
         else if (req.body.suggestion_type == "EDIT") {
             if (req.body.link_id) {
-                let query = "MATCH ()-[r]-() Where ID(r)=" + req.body.link_id + " return r;";
-                db.cypherQuery(query, function (err, rel) {
+                //let query = "MATCH ()-[r]-() Where ID(r)=" + req.body.link_id + " return r;";
+                db.readRelationship(req.body.link_id, function (err, rel) {
                     if (err) {
                         res.status(500).json("Internal error");
                     }
@@ -80,6 +80,7 @@ exports.createLinkSuggestion = function (req, res) {
                         res.status(400).json("Invalid link_id supplied");
                     }
                     else {
+                        console.log(rel);
                         let newRelationship = new LinkSuggestion();
                         newRelationship.author = req.body.author;
                         newRelationship.suggestionType = req.body.suggestionType;
@@ -119,8 +120,8 @@ exports.createLinkSuggestion = function (req, res) {
         }
         else if (req.body.suggestion_type == "DELETE") {
             if (req.body.link_id) {
-                let query = "MATCH ()-[r]-() Where ID(r)=" + req.body.link_id + " return r;";
-                db.cypherQuery(query, function (err, rel) {
+                //let query = "MATCH ()-[r]-() Where ID(r)=" + req.body.link_id + " return r;";
+                db.readRelationship(req.body.link_id, function (err, rel) {
                     if (err) {
                         res.status(500).json("Internal error");
                     }
