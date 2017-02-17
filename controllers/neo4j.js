@@ -11,7 +11,20 @@ exports.getAllLabels = function (callback) {
     db.listAllLabels(callback);
 };
 
+exports.getAllNodes = function (req,res) {
+    let queryString = "match (n) return n";
+    db.cypherQuery(queryString,function (err,result) {
+        if(err) {
+            res.status(500).json("An error occurred");
+            console.log(err);
+        }
+        else {
+            res.status(200).json(result.data);
+        }
 
+
+    })
+};
 exports.getNodesByLabels = function (req, res) {
 
     if (req.body.labels && req.body.labels.length) {
