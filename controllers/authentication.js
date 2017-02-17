@@ -36,7 +36,7 @@ exports.login = function (req,res) {
                                     res.status(500).json({"error": "Error while listing labels", "token": user.token});
                                 }
                                 else {
-                                    res.status(200).json({"token": user.token, "labels": labels});
+                                    res.status(200).json({"token": user.token, "user_id": user._id, "labels": labels});
                                 }
                             });
 

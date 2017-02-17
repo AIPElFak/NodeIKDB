@@ -20,6 +20,9 @@ router.route('/getallnodes').get(neo4jController.getAllNodes);
 
 router.route('/createnodesuggestion').post(suggestionController.createNodeSuggestion);
 router.route('/createlinksuggestion').post(suggestionController.createLinkSuggestion);
+router.route('/getnodesuggestions/:_id?').get(suggestionController.getNodeSuggestions);
+router.route('/getlinksuggestions/:_id?').get(suggestionController.getLinkSuggestions);
+router.route('/voteonsuggestion').post(suggestionController.voteOnSuggestion);
 
 
 

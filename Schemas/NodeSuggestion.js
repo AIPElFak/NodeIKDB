@@ -15,9 +15,9 @@ var NodeSuggestionSchema = mongoose.Schema({
     definition: String,
     description: String,
     date_created : {type: Date, default: Date.now()},
-    votes_for: {type: Number, default: 0},
-    votes_against: {type: Number, default: 0},
-    votes_users: [{user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}, positive: Boolean}]
+    votes_for: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
+    votes_against: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}]
+    //votes_users: [{user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}, positive: Boolean}]
 });
 
 

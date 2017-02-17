@@ -314,3 +314,166 @@ exports.createNodeSuggestion = function (req, res) {
         res.status(400).json("Insufficient data in request");
     }
 };
+
+
+exports.getNodeSuggestions = function (req, res) {
+    if (req.params._id) {
+        NodeSuggestion.findOne({"_id": req.params._id}, function (err, result) {
+            if (err) {
+                res.status(500).json("Internal error");
+            }
+            else {
+                res.status(200).json(result);
+            }
+        });
+    }
+    else {
+        NodeSuggestion.find({}, function (err, result) {
+            if (err) {
+                res.status(500).json("Internal error");
+            }
+            else {
+                res.status(200).json(result);
+            }
+        });
+    }
+};
+
+exports.getLinkSuggestions = function (req, res) {
+    if (req.params._id) {
+        LinkSuggestion.findOne({"_id": req.params._id}, function (err, result) {
+            if (err) {
+                res.status(500).json("Internal error");
+            }
+            else {
+                res.status(200).json(result);
+            }
+        });
+    }
+    else {
+        LinkSuggestion.find({}, function (err, result) {
+            if (err) {
+                res.status(500).json("Internal error");
+            }
+            else {
+                res.status(200).json(result);
+            }
+        });
+    }
+};
+
+exports.filterNodeSuggestions = function (req, res) {
+    if (req.body.name) { //mozda pukne ako se cvor zove "false"
+        NodeSuggestion.find({"name": req.body.name}, function (err, result) {
+            if (err) {
+                res.status(500).json("Internal error");
+            }
+            else {
+                res.status(200).json(result);
+            }
+        });
+    }
+    else {
+        //ne moze da se desi
+        res.status(400).json("No node name in request");
+    }
+};
+
+
+exports.voteOnSuggestion = function (req, res) {
+    if (req.body.suggestion_type && req.body.suggestion_id && req.body.vote && req.body.user_id) {
+
+        if (req.body.suggestion_type == "NODE") {
+            if (req.body.vote == "POSITIVE") {
+
+                NodeSuggestion.findOneAndUpdate({"_id": req.body.suggestion_id}, {$pull: {"votes_against": req.body.user_id, "votes_for": req.body.user_id}}, function (err, result1) {
+                    if (err) {
+                        res.status(500).json("Internal error");
+                    }
+                    else {
+                        NodeSuggestion.findOneAndUpdate({"_id": req.body.suggestion_id}, {$push: {"votes_for": req.body.user_id}}, function (err, result2) {
+                            if (err) {
+                                res.status(500).json("Internal error");
+                            }
+                            else {
+                                res.status(200).json("Success");
+                            }
+                        });
+                    }
+                });
+
+            }
+            else if (req.body.vote == "NEGATIVE") {
+
+                NodeSuggestion.findOneAndUpdate({"_id": req.body.suggestion_id}, {$pull: {"votes_against": req.body.user_id, "votes_for": req.body.user_id}}, function (err, result1) {
+                    if (err) {
+                        res.status(500).json("Internal error");
+                    }
+                    else {
+                        NodeSuggestion.findOneAndUpdate({"_id": req.body.suggestion_id}, {$push: {"votes_against": req.body.user_id}}, function (err, result2) {
+                            if (err) {
+                                res.status(500).json("Internal error");
+                            }
+                            else {
+                                res.status(200).json("Success");
+                            }
+                        });
+                    }
+                });
+            }
+            else {
+                res.status(400).json("Invalid vote type supplied");
+            }
+        }
+        else if (req.body.suggestion_type == "LINK") {
+            if (req.body.vote == "POSITIVE") {
+
+                LinkSuggestion.findOneAndUpdate({"_id": req.body.suggestion_id}, {$pull: {"votes_against": req.body.user_id, "votes_for": req.body.user_id}}, function (err, result1) {
+                    if (err) {
+                        res.status(500).json("Internal error");
+                    }
+                    else {
+                        LinkSuggestion.findOneAndUpdate({"_id": req.body.suggestion_id}, {$push: {"votes_for": req.body.user_id}}, function (err, result2) {
+                            if (err) {
+                                res.status(500).json("Internal error");
+                            }
+                            else {
+                                res.status(200).json("Success");
+                            }
+                        });
+                    }
+                });
+
+            }
+            else if (req.body.vote == "NEGATIVE") {
+
+                LinkSuggestion.findOneAndUpdate({"_id": req.body.suggestion_id}, {$pull: {"votes_against": req.body.user_id, "votes_for": req.body.user_id}}, function (err, result1) {
+                    if (err) {
+                        res.status(500).json("Internal error");
+                    }
+                    else {
+                        LinkSuggestion.findOneAndUpdate({"_id": req.body.suggestion_id}, {$push: {"votes_against": req.body.user_id}}, function (err, result2) {
+                            if (err) {
+                                res.status(500).json("Internal error");
+                            }
+                            else {
+                                res.status(200).json("Success");
+                            }
+                        });
+                    }
+                });
+
+            }
+            else {
+                res.status(400).json("Invalid vote type supplied");
+            }
+        }
+        else {
+            res.status(400).json("Invalid suggestion_type supplied");
+        }
+
+    }
+    else {
+        res.status(400).json("Insufficient information supplied");
+    }
+};
