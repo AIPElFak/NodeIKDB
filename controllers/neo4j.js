@@ -79,3 +79,21 @@ exports.getNodeById = function (req,res) {
 
 
 };
+
+exports.getRelationshipById = function (req,res) {
+    if (req.params._id) {
+        db.readRelationship(req.params._id, function (err, relationship) {
+            if (err) {
+                res.status(500).json("Server error");
+            }
+            else {
+                res.status(200).json({"relationship": relationship});
+            }
+        })
+    }
+    else {
+        res.status(400).json("No relationship id supplied");
+    }
+
+};
+
