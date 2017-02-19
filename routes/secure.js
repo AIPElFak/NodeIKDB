@@ -23,9 +23,31 @@ router.route('/createnodesuggestion').post(suggestionController.createNodeSugges
 router.route('/createlinksuggestion').post(suggestionController.createLinkSuggestion);
 router.route('/getnodesuggestions/:_id?').get(suggestionController.getNodeSuggestions);
 router.route('/getlinksuggestions/:_id?').get(suggestionController.getLinkSuggestions);
-router.route('/voteonsuggestion').post(suggestionController.voteOnSuggestion);
-router.route('/voteonnode').post(neo4jController.voteOnNode);
-router.route('/voteonlink').post(neo4jController.voteOnLink);
+
+
+const User = require('../Schemas/User.js');
+function checkValidUserId(req, res, next) {
+    if (req.body.user_id) {
+        User.findOne({'_id': req.body.user_id}, function (err, user) {
+            if (err) {
+                res.status(500).json("Internal error");
+            }
+            else if (!user) {
+                res.status(400).json("Invalid user_id supplied");
+            }
+            else {
+                next()
+            }
+        })
+    }
+    else {
+        res.status(400).json("No user_id supplied");
+    }
+
+}
+router.route('/voteonsuggestion').post(checkValidUserId, suggestionController.voteOnSuggestion);
+router.route('/voteonnode').post(checkValidUserId, neo4jController.voteOnNode);
+router.route('/voteonlink').post(checkValidUserId, neo4jController.voteOnLink);
 
 
 
