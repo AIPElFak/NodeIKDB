@@ -66,7 +66,14 @@ exports.getNodeById = function (req,res) {
                         res.status(500).json("Server error");
                     }
                     else {
-                        res.status(200).json({"node":node,"relationships":relationships});
+                        db.readLabels(req.params._id, function (err, labels) {
+                            if (err) {
+                                res.status(500).json("Server error");
+                            }
+                            else {
+                                res.status(200).json({"node":node,"relationships":relationships, "labels": labels});
+                            }
+                        });
                     }
 
                 })
@@ -95,5 +102,27 @@ exports.getRelationshipById = function (req,res) {
         res.status(400).json("No relationship id supplied");
     }
 
+};
+
+//user_id assumed valid
+exports.voteOnNode = function (req, res) {
+    if (req.body.user_id && req.body.node_id && req.body.vote) {
+        if (req.body.vote == "POSITIVE") {
+            db.updateNode(req.body.node_id, {votes_for: votes_for + req.body.user_id, votes_against: votes_against - req.body.user_id}, function (err, res) {
+                if (err) {
+
+                }
+            });
+        }
+        else if (req.body.vote == "NEGATIVE") {
+
+        }
+        else {
+            res.status(400).json("Unsupported vote type");
+        }
+    }
+    else {
+        res.status(400).json("Insufficient data supplied");
+    }
 };
 
