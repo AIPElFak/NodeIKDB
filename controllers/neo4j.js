@@ -107,19 +107,155 @@ exports.getRelationshipById = function (req,res) {
 //user_id assumed valid
 exports.voteOnNode = function (req, res) {
     if (req.body.user_id && req.body.node_id && req.body.vote) {
-        if (req.body.vote == "POSITIVE") {
-            db.updateNode(req.body.node_id, {votes_for: votes_for + req.body.user_id, votes_against: votes_against - req.body.user_id}, function (err, res) {
-                if (err) {
 
+        db.readNode(req.body.node_id, function (err, node) {
+            if (err) {
+                res.status(500).json("Internal error");
+            }
+            else if (!node) {
+                res.status(400).json("Invalid node_id supplied");
+            }
+            else {
+                let foundPos = false;
+                let foundNeg = false;
+                for (let i=0; i<=node.votes_for.length-1; i++) {
+                    if (node.votes_for[i] == req.body.user_id) {
+                        foundPos = true;
+                        break;
+                    }
                 }
-            });
-        }
-        else if (req.body.vote == "NEGATIVE") {
+                for (let i=0; i<=node.votes_against.length-1; i++) {
+                    if (node.votes_against[i] == req.body.user_id) {
+                        foundNeg = true;
+                        break;
+                    }
+                }
+                let updateQuery = "MATCH (n) WHERE ID(n)=" + req.body.node_id + " SET ";
+                if (req.body.vote == "POSITIVE") {
+                    if (foundPos) {
+                        res.status(200).json("Already voted positively on this node");
+                    }
+                    else {
+                        updateQuery += "n.votes_for= n.votes_for + \"" + req.body.user_id + "\"";
+                        if (foundNeg) {
+                            updateQuery += ",n.votes_against= FILTER(x IN n.votes_against WHERE x <> \"" + req.body.user_id + "\")";
+                            //updateQuery += ",n.votes_against= n.votes_against - \"" + req.body.user_id + "\"";
+                        }
+                        db.cypherQuery(updateQuery, function (err, result) {
+                            if (err) {
+                                console.log(err);
+                                res.status(500).json("Internal error");
+                            }
+                            else {
+                                res.status(200).json("Successfully voted on node");
+                            }
+                        });
+                    }
+                }
+                else if (req.body.vote == "NEGATIVE") {
+                    if (foundNeg) {
+                        res.status(200).json("Already voted negatively on this node");
+                    }
+                    else {
+                        updateQuery += "n.votes_against= n.votes_against + \"" + req.body.user_id + "\"";
+                        if (foundPos) {
+                            updateQuery += ",n.votes_for= FILTER(x IN n.votes_for WHERE x <> \"" + req.body.user_id + "\")";
+                        }
+                        db.cypherQuery(updateQuery, function (err, result) {
+                            if (err) {
+                                res.status(500).json("Internal error");
+                                console.log(err);
+                            }
+                            else {
+                                res.status(200).json("Successfully voted on node");
+                            }
+                        });
+                    }
+                }
+                else {
+                    res.status(400).json("Unsupported vote type");
+                }
+            }
+        });
 
-        }
-        else {
-            res.status(400).json("Unsupported vote type");
-        }
+    }
+    else {
+        res.status(400).json("Insufficient data supplied");
+    }
+};
+
+exports.voteOnLink = function (req, res) {
+    if (req.body.user_id && req.body.link_id && req.body.vote) {
+        db.readRelationship(req.body.link_id, function (err, link) {
+            if (err) {
+                console.log(err);
+                res.status(500).json("Internal error");
+            }
+            else if (!link) {
+                res.status(400).json("Invalid link_id supplied");
+            }
+            else {
+                let foundPos = false;
+                let foundNeg = false;
+                for (let i=0; i<=link.votes_for.length-1; i++) {
+                    if (link.votes_for[i] == req.body.user_id) {
+                        foundPos = true;
+                        break;
+                    }
+                }
+                for (let i=0; i<=link.votes_against.length-1; i++) {
+                    if (link.votes_against[i] == req.body.user_id) {
+                        foundNeg = true;
+                        break;
+                    }
+                }
+                let updateQuery = "MATCH (n)-[r]->(m) where id(r)=" + req.body.link_id + " SET ";
+                if (req.body.vote == "POSITIVE") {
+                    if (foundPos) {
+                        res.status(200).json("Already voted positively on this link");
+                    }
+                    else {
+                        updateQuery += "r.votes_for= r.votes_for + \"" + req.body.user_id + "\"";
+                        if (foundNeg) {
+                            updateQuery += ",r.votes_against= FILTER(x IN r.votes_against WHERE x <> \"" + req.body.user_id + "\")";
+                            //updateQuery += ",n.votes_against= n.votes_against - \"" + req.body.user_id + "\"";
+                        }
+                        db.cypherQuery(updateQuery, function (err, result) {
+                            if (err) {
+                                console.log(err);
+                                res.status(500).json("Internal error");
+                            }
+                            else {
+                                res.status(200).json("Successfully voted on link");
+                            }
+                        });
+                    }
+                }
+                else if (req.body.vote == "NEGATIVE") {
+                    if (foundNeg) {
+                        res.status(200).json("Already voted negatively on this link");
+                    }
+                    else {
+                        updateQuery += "r.votes_against= r.votes_against + \"" + req.body.user_id + "\"";
+                        if (foundPos) {
+                            updateQuery += ",r.votes_for= FILTER(x IN r.votes_for WHERE x <> \"" + req.body.user_id + "\")";
+                        }
+                        db.cypherQuery(updateQuery, function (err, result) {
+                            if (err) {
+                                res.status(500).json("Internal error");
+                                console.log(err);
+                            }
+                            else {
+                                res.status(200).json("Successfully voted on link");
+                            }
+                        });
+                    }
+                }
+                else {
+                    res.status(400).json("Unsupported vote type");
+                }
+            }
+        });
     }
     else {
         res.status(400).json("Insufficient data supplied");

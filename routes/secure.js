@@ -24,6 +24,8 @@ router.route('/createlinksuggestion').post(suggestionController.createLinkSugges
 router.route('/getnodesuggestions/:_id?').get(suggestionController.getNodeSuggestions);
 router.route('/getlinksuggestions/:_id?').get(suggestionController.getLinkSuggestions);
 router.route('/voteonsuggestion').post(suggestionController.voteOnSuggestion);
+router.route('/voteonnode').post(neo4jController.voteOnNode);
+router.route('/voteonlink').post(neo4jController.voteOnLink);
 
 
 
