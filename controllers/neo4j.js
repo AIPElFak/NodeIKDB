@@ -94,7 +94,7 @@ exports.getRelationshipById = function (req,res) {
                 res.status(500).json("Server error");
             }
             else {
-                res.status(200).json({"relationship": relationship});
+                res.status(200).json(relationship);
             }
         })
     }
