@@ -9,7 +9,8 @@ let UserSchema = mongoose.Schema({
     password: String,
     email: String,
     verified: Boolean,
-    token: String
+    token: String,
+    date_created : {type: Date, default: Date.now()}
 });
 
 User = mongoose.model('User',UserSchema);

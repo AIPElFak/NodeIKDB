@@ -32,7 +32,7 @@ exports.createLinkSuggestion = function (req, res) {
                                 else {
                                     let newRelationship = new LinkSuggestion();
                                     newRelationship.author = req.body.author;
-                                    newRelationship.suggestionType = req.body.suggestionType;;
+                                    newRelationship.suggestion_type = req.body.suggestion_type;
                                     newRelationship.link_id = null;
                                     newRelationship.type = req.body.type;
                                     if (req.body.description) {
@@ -43,8 +43,8 @@ exports.createLinkSuggestion = function (req, res) {
                                     }
                                     newRelationship.node_from = req.body.node_from;
                                     newRelationship.node_to = req.body.node_to;
-                                    newRelationship.node_from_name = nodeFrom.name;
-                                    newRelationship.node_to_name = nodeTo.name;
+                                    newRelationship.start_name = nodeFrom.name;
+                                    newRelationship.end_name = nodeTo.name;
 
                                     newRelationship.save(function (err) {
                                         if (err) {
@@ -83,14 +83,16 @@ exports.createLinkSuggestion = function (req, res) {
                         console.log(rel);
                         let newRelationship = new LinkSuggestion();
                         newRelationship.author = req.body.author;
-                        newRelationship.suggestionType = req.body.suggestionType;
-                        newRelationship.link_id = req.body.linkId;
-                        if (req.body.type) {
-                            newRelationship.type = req.body.type;
-                        }
-                        else {
-                            newRelationship.type = rel._type;
-                        }
+                        newRelationship.suggestion_type = req.body.suggestion_type;
+                        newRelationship.link_id = req.body.link_id;
+                        // if (req.body.type) {
+                        //     newRelationship.type = req.body.type;
+                        // }
+                        // else {
+                        //     newRelationship.type = rel._type;
+                        // }
+                        // onemogucena promena tipa kod veza
+                        newRelationship.type = rel._type;
 
                         if (req.body.description) {
                             newRelationship.description = req.body.description;
@@ -100,8 +102,8 @@ exports.createLinkSuggestion = function (req, res) {
                         }
                         newRelationship.node_from = rel._start;
                         newRelationship.node_to = rel._end;
-                        newRelationship.node_from_name = rel.startName;
-                        newRelationship.node_to_name = rel.endName;
+                        newRelationship.start_name = rel.start_name;
+                        newRelationship.end_name = rel.end_name;
 
                         newRelationship.save(function (err) {
                             if (err) {
@@ -131,14 +133,14 @@ exports.createLinkSuggestion = function (req, res) {
                     else {
                         let newRelationship = new LinkSuggestion();
                         newRelationship.author = req.body.author;
-                        newRelationship.suggestionType = req.body.suggestionType;
-                        newRelationship.link_id = req.body.linkId;
+                        newRelationship.suggestion_type = req.body.suggestion_type;
+                        newRelationship.link_id = req.body.link_id;
                         newRelationship.type = rel._type;
                         newRelationship.description = rel.description;
                         newRelationship.node_from = rel._start;
                         newRelationship.node_to = rel._end;
-                        newRelationship.node_from_name = rel.startName;
-                        newRelationship.node_to_name = rel.endName;
+                        newRelationship.start_name = rel.start_name;
+                        newRelationship.end_name = rel.end_name;
 
                         newRelationship.save(function (err) {
                             if (err) {
@@ -170,7 +172,7 @@ exports.createNodeSuggestion = function (req, res) {
     if (req.body.author && req.body.suggestion_type) {
         if (req.body.suggestion_type == "CREATE") {
             if (req.body.name && req.body.definition) {
-                if (req.body.types && req.body.types.length && req.body.types.length > 0) {
+                if (req.body.types && req.body.types instanceof Array && req.body.types.length && req.body.types.length > 0) {
                     let newNode = new NodeSuggestion();
                     newNode.author = req.body.author;
                     newNode.suggestion_type = req.body.suggestion_type;
@@ -220,7 +222,7 @@ exports.createNodeSuggestion = function (req, res) {
                         newNode.suggestion_type = req.body.suggestion_type;
                         newNode.node_id = req.body.node_id;
                         if (req.body.types) {
-                            if (req.body.types.length && req.body.types.length > 0) {
+                            if (req.body.types instanceof Array && req.body.types.length && req.body.types.length > 0) {
                                 newNode.types = [];
                                 for (let i=0; i<=req.body.types.length-1; i++) {
                                     newNode.types.push(req.body.types[i]);
@@ -236,7 +238,9 @@ exports.createNodeSuggestion = function (req, res) {
                         }
 
                         if (req.body.name) {
-                            newNode.name = req.body.name;
+                            //ime cvora ne moze da se menja
+                            newNode.name = node.name;
+                            //newNode.name = req.body.name;
                         }
                         else {
                             newNode.name = node.name;

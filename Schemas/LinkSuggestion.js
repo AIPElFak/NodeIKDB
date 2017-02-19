@@ -14,8 +14,8 @@ var LinkSuggestionSchema = mongoose.Schema({
     description: String,
     node_from: String,
     node_to: String,
-    node_to_name: String,
-    node_from_name: String,
+    start_name: String,
+    end_name: String,
     date_created : {type: Date, default: Date.now()},
     votes_for: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
     votes_against: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}]
