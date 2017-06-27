@@ -14,4 +14,10 @@ router.route('/createuser').post(userController.createUser);
 router.route('/login').post(authController.login);
 router.route('/verify/:link').get(redisController.verify);
 
+const socketController = require('../controllers/socket');
+router.route('/serverupdate').get(() => {
+  socketController.broadcastEvent("globalupdate");
+  res.status(200).json("Success");
+});
+
 module.exports = router;

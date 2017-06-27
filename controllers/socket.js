@@ -14,6 +14,12 @@ io.on('connection', (socket) => {
         connections.splice(connections.indexOf(socket), 1);
     });
 
+    //python event
+    socket.on('glamurozni_guz', (data) => {
+       console.log("glamurozni_guz");
+       console.log(data);
+    });
+
 });
 
 exports.broadcastEvent = (tag) => {

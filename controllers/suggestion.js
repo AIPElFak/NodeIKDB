@@ -11,6 +11,45 @@ let db = new neo4j('http://neo4j:test@localhost:7474');
 
 const socketController = require('./socket');
 
+exports.getNodeSuggestion = () => {
+    if (req.body._id) {
+        //mongo doesn't support lambda functions
+        NodeSuggestion.findOne({"_id": req.body._id}, function (err, doc) {
+            if (err) {
+                res.status(500).json("Server error");
+            }
+            else if (!doc) {
+                res.status(400).json("Invalid _id suplied");
+            }
+            else {
+                res.status(200).json(doc);
+            }
+        })
+    }
+    else {
+        res.status(400).json("No _id in request");
+    }
+};
+
+exports.getLinkSuggestion = () => {
+    if (req.body._id) {
+        LinkSuggestion.findOne({"_id": req.body._id}, function (err, doc) {
+            if (err) {
+                res.status(500).json("Server error");
+            }
+            else if (!doc) {
+                res.status(400).json("Invalid _id suplied");
+            }
+            else {
+                res.status(200).json(doc);
+            }
+        })
+    }
+    else {
+        res.status(400).json("No _id in request");
+    }
+};
+
 exports.createLinkSuggestion = function (req, res) {
     //valid req.body.author assumed
     if (req.body.author && req.body.suggestion_type) {
