@@ -189,7 +189,7 @@ exports.voteOnNode = function (req, res) {
                                 res.status(500).json("Internal error");
                             }
                             else {
-                                socketController.broadcastEvent("node-" + req.body.suggestion_id);
+                                socketController.broadcastEvent("node-" + req.body.node_id);
                                 res.status(200).json("Successfully voted on node");
                             }
                         });
@@ -210,7 +210,7 @@ exports.voteOnNode = function (req, res) {
                                 console.log(err);
                             }
                             else {
-                                socketController.broadcastEvent("node-" + req.body.suggestion_id);
+                                socketController.broadcastEvent("node-" + req.body.node_id);
                                 res.status(200).json("Successfully voted on node");
                             }
                         });
@@ -270,7 +270,7 @@ exports.voteOnLink = function (req, res) {
                                 res.status(500).json("Internal error");
                             }
                             else {
-                                socketController.broadcastEvent("link-" + req.body.suggestion_id);
+                                socketController.broadcastEvent("link-" + req.body.link_id);
                                 res.status(200).json("Successfully voted on link");
                             }
                         });
@@ -291,7 +291,7 @@ exports.voteOnLink = function (req, res) {
                                 console.log(err);
                             }
                             else {
-                                socketController.broadcastEvent("link-" + req.body.suggestion_id);
+                                socketController.broadcastEvent("link-" + req.body.link_id);
                                 res.status(200).json("Successfully voted on link");
                             }
                         });
