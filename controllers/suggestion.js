@@ -93,6 +93,7 @@ exports.createLinkSuggestion = function (req, res) {
                                             res.status(500).json("Internal error");
                                         }
                                         else {
+                                            socketController.broadcastEvent("linksuggestion");
                                             res.status(200).json(newRelationship);
                                         }
                                     });
@@ -152,6 +153,7 @@ exports.createLinkSuggestion = function (req, res) {
                                 res.status(500).json("Internal error");
                             }
                             else {
+                                socketController.broadcastEvent("linksuggestion");
                                 res.status(200).json(newRelationship);
                             }
                         });
@@ -189,6 +191,7 @@ exports.createLinkSuggestion = function (req, res) {
                                 res.status(500).json("Internal error");
                             }
                             else {
+                                socketController.broadcastEvent("linksuggestion");
                                 res.status(200).json(newRelationship);
                             }
                         });
@@ -237,6 +240,7 @@ exports.createNodeSuggestion = function (req, res) {
                             res.status(500).json("Internal error");
                         }
                         else {
+                            socketController.broadcastEvent("nodesuggestion");
                             res.status(200).json(newNode);
                         }
                     });
@@ -307,6 +311,7 @@ exports.createNodeSuggestion = function (req, res) {
                                 res.status(500).json("Internal error");
                             }
                             else {
+                                socketController.broadcastEvent("nodesuggestion");
                                 res.status(200).json(newNode);
                             }
                         });
@@ -342,6 +347,7 @@ exports.createNodeSuggestion = function (req, res) {
                                 res.status(500).json("Internal error");
                             }
                             else {
+                                socketController.broadcastEvent("nodesuggestion");
                                 res.status(200).json(newNode);
                             }
                         });
