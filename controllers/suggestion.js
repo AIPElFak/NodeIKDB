@@ -9,6 +9,8 @@ const CategorySuggestion = require('../Schemas/CategorySuggestion');
 const neo4j = require('node-neo4j');
 let db = new neo4j('http://neo4j:test@localhost:7474');
 
+const socketController = require('./socket');
+
 exports.createLinkSuggestion = function (req, res) {
     //valid req.body.author assumed
     if (req.body.author && req.body.suggestion_type) {
@@ -401,6 +403,7 @@ exports.voteOnSuggestion = function (req, res) {
                                 res.status(500).json("Internal error");
                             }
                             else {
+                                socketController.broadcastEvent("nodesuggestion-" + req.body.suggestion_id);
                                 res.status(200).json("Success");
                             }
                         });
@@ -420,6 +423,7 @@ exports.voteOnSuggestion = function (req, res) {
                                 res.status(500).json("Internal error");
                             }
                             else {
+                                socketController.broadcastEvent("nodesuggestion-" + req.body.suggestion_id);
                                 res.status(200).json("Success");
                             }
                         });
@@ -443,6 +447,7 @@ exports.voteOnSuggestion = function (req, res) {
                                 res.status(500).json("Internal error");
                             }
                             else {
+                                socketController.broadcastEvent("linksuggestion-" + req.body.suggestion_id);
                                 res.status(200).json("Success");
                             }
                         });
@@ -462,6 +467,7 @@ exports.voteOnSuggestion = function (req, res) {
                                 res.status(500).json("Internal error");
                             }
                             else {
+                                socketController.broadcastEvent("linksuggestion-" + req.body.suggestion_id);
                                 res.status(200).json("Success");
                             }
                         });

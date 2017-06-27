@@ -7,6 +7,8 @@ var bodyParser = require('body-parser');
 
 var mongoConnection = require('./controllers/mongo');
 
+var socketController = require('./controllers/socket');
+
 var index = require('./routes/index');
 var users = require('./routes/users');
 var secure = require('./routes/secure');

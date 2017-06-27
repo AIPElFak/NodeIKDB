@@ -16,6 +16,14 @@ io.on('connection', (socket) => {
 
 });
 
+exports.broadcastEvent = (tag) => {
+    let sock = connections[0];
+    if (sock) {
+        sock.broadcast.emit(tag);
+        sock.emit(tag);
+    }
+};
+
 exports.broadcastMessage = (tag, message) => {
     let sock = connections[0];
     if (sock) { // ovde ide i openState
