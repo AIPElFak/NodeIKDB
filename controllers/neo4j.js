@@ -173,7 +173,7 @@ exports.voteOnNode = function (req, res) {
                 let updateQuery = "MATCH (n) WHERE ID(n)=" + req.body.node_id + " SET ";
                 if (req.body.vote == "POSITIVE") {
                     if (foundPos) {
-                        res.status(200).json("Already voted positively on this node");
+                        res.status(400).json("Already voted positively on this node");
                     }
                     else {
                         updateQuery += "n.votes_for= n.votes_for + \"" + req.body.user_id + "\"";
@@ -194,7 +194,7 @@ exports.voteOnNode = function (req, res) {
                 }
                 else if (req.body.vote == "NEGATIVE") {
                     if (foundNeg) {
-                        res.status(200).json("Already voted negatively on this node");
+                        res.status(400).json("Already voted negatively on this node");
                     }
                     else {
                         updateQuery += "n.votes_against= n.votes_against + \"" + req.body.user_id + "\"";
