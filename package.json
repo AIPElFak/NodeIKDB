@@ -18,6 +18,7 @@
     "node-neo4j": "^2.0.3",
     "nodemailer": "~0.7.1",
     "redis": "^2.6.5",
-    "serve-favicon": "~2.3.0"
+    "serve-favicon": "~2.3.0",
+    "socket.io": "^2.0.3"
   }
 }

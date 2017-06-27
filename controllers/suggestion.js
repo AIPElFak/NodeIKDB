@@ -4,6 +4,7 @@
 
 const LinkSuggestion = require('../Schemas/LinkSuggestion');
 const NodeSuggestion = require('../Schemas/NodeSuggestion');
+const CategorySuggestion = require('../Schemas/CategorySuggestion');
 
 const neo4j = require('node-neo4j');
 let db = new neo4j('http://neo4j:test@localhost:7474');
@@ -479,5 +480,114 @@ exports.voteOnSuggestion = function (req, res) {
     }
     else {
         res.status(400).json("Insufficient information supplied");
+    }
+};
+
+
+exports.createCategorySuggestion = function (req, res) {
+    if (req.body.author && req.body.suggestion_type) {
+        if (req.body.suggestion_type == "CREATE") {
+            if (req.body.name) {
+                db.listAllLabels(function (err, labels) {
+                    if (err) {
+                        res.status(500).json("Internal error");
+                    }
+                    else {
+                        if (labels && labels instanceof Array && labels.length && labels.length > 0) {
+                            let exists = false;
+                            for (let i=0; i<=labels.length-1; i++) {
+                                if (labels[i] == req.body.name) {
+                                    exists = true;
+                                    break;
+                                }
+                            }
+                            if (!exists) {
+                                let newCategory = new CategorySuggestion();
+                                newCategory.author = req.body.author;
+                                newCategory.suggestion_type = req.body.suggestion_type;
+                                newCategory.name = req.body.name;
+                                newCategory.save(function (err) {
+                                    if (err) {
+                                        res.status(500).json("Internal error");
+                                    }
+                                    else {
+                                        res.status(200).json(newCategory);
+                                    }
+                                });
+                            }
+                            else {
+                                res.status(400).json("Category already exists");
+                            }
+                        }
+                        else {
+                            let newCategory = new CategorySuggestion();
+                            newCategory.author = req.body.author;
+                            newCategory.suggestion_type = req.body.suggestion_type;
+                            newCategory.name = req.body.name;
+                            newCategory.save(function (err) {
+                                if (err) {
+                                    res.status(500).json("Internal error");
+                                }
+                                else {
+                                    res.status(200).json(newCategory);
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+            else {
+                res.status(400).json("Insufficient data to build a suggestion");
+            }
+        }
+        else if (req.body.suggestion_type == "DELETE") {
+            if (req.body.name) {
+                db.listAllLabels(function (err, labels) {
+                    if (err) {
+                        res.status(500).json("Internal error");
+                    }
+                    else {
+                        if (labels && labels instanceof Array && labels.length && labels.length > 0) {
+                            let exists = false;
+                            for (let i=0; i<=labels.length-1; i++) {
+                                if (labels[i] == req.body.name) {
+                                    exists = true;
+                                    break;
+                                }
+                            }
+                            if (exists) {
+                                let newCategory = new CategorySuggestion();
+                                newCategory.author = req.body.author;
+                                newCategory.suggestion_type = req.body.suggestion_type;
+                                newCategory.name = req.body.name;
+                                newCategory.save(function (err) {
+                                    if (err) {
+                                        res.status(500).json("Internal error");
+                                    }
+                                    else {
+                                        res.status(200).json(newCategory);
+                                    }
+                                });
+                            }
+                            else {
+                                res.status(400).json("Selected label doesn't exist.");
+                            }
+                        }
+                        else {
+                            res.status(400).json("Unable to complete operation. No labels to delete?");
+                        }
+                    }
+                });
+            }
+            else {
+                res.status(400).json("No node_id in request");
+            }
+        }
+        else {
+            res.status(400).json("Unsupported suggestion type");
+        }
+    }
+    else {
+        res.status(400).json("Insufficient data in request");
     }
 };

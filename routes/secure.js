@@ -16,6 +16,7 @@ router.use(authController.authenticate);
 
 router.route('/getnodeswithlabels').post(neo4jController.getNodesByLabels);
 router.route('/getnodebyid/:_id').get(neo4jController.getNodeById);
+router.route('/getnodebyname/:name').get(neo4jController.getNodeByName);
 router.route('/getallnodes').get(neo4jController.getAllNodes);
 router.route('/getrelationshipbyid/:_id').get(neo4jController.getRelationshipById);
 

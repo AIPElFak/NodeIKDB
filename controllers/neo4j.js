@@ -87,6 +87,46 @@ exports.getNodeById = function (req,res) {
 
 };
 
+exports.getNodeByName = (req, res) => {
+    if (req.params.name) {
+        let query = "match (n) where n.name = \"" + req.params.name + "\" return n;";
+
+        db.cypherQuery(query, (err, result) => {
+            if (err) {
+                res.status(500).json("An error occurred: " + err);
+            }
+            else {
+                if (result.data && result.data instanceof Array && result.data.length && result.data.length > 0) {
+                    let node = result.data[0];
+
+                    db.readRelationshipsOfNode(node._id, (err,relationships) => {
+                        if(err) {
+                            res.status(500).json("Server error");
+                        }
+                        else {
+                            db.readLabels(node._id, (err, labels) => {
+                                if (err) {
+                                    res.status(500).json("Server error");
+                                }
+                                else {
+                                    res.status(200).json({"node":node,"relationships":relationships, "labels": labels});
+                                }
+                            });
+                        }
+
+                    });
+                }
+                else {
+                    res.status(400).json("Invalid node name supplied");
+                }
+            }
+        });
+    }
+    else {
+        res.status(400).json("No name supplied.");
+    }
+};
+
 exports.getRelationshipById = function (req,res) {
     if (req.params._id) {
         db.readRelationship(req.params._id, function (err, relationship) {
