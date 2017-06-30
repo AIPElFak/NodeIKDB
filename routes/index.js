@@ -15,7 +15,7 @@ router.route('/login').post(authController.login);
 router.route('/verify/:link').get(redisController.verify);
 
 const socketController = require('../controllers/socket');
-router.route('/serverupdate').get(() => {
+router.route('/serverupdate').get((req, res) => {
   socketController.broadcastEvent("globalupdate");
   res.status(200).json("Success");
 });
